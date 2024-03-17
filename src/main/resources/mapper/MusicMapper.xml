@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lwl.gedan.mapper.MusicMapper">
+
+    <resultMap id="BaseResultMap" type="com.lwl.gedan.model.entity.Music">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="type" column="type" jdbcType="VARCHAR"/>
+            <result property="music" column="music" jdbcType="VARCHAR"/>
+            <result property="tags" column="tags" jdbcType="VARCHAR"/>
+            <result property="userid" column="userId" jdbcType="BIGINT"/>
+            <result property="createtime" column="createTime" jdbcType="TIMESTAMP"/>
+            <result property="updatetime" column="updateTime" jdbcType="TIMESTAMP"/>
+            <result property="isdelete" column="isDelete" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,type,music,
+        tags,userId,createTime,
+        updateTime,isDelete
+    </sql>
+
+
+    <insert id="addMusic">
+        INSERT INTO music (music, singer)
+        VALUES (#{music}, #{singer});
+    </insert>
+
+    <update id="updateMusic">
+        UPDATE music
+        SET
+            music = #{music},
+            singer = #{singer}
+        WHERE
+            id = #{id};
+    </update>
+
+    <update id="deleteMusic">
+        UPDATE music
+        SET
+            isDelete = 1
+        WHERE
+            id = #{id};
+    </update>
+
+    <select id="listPostWithDelete" resultType="com.lwl.gedan.model.entity.Post">
+        select *
+        from post
+        where updateTime >= #{minUpdateTime}
+    </select>
+
+
+    <select id="getMusicMapper" resultType="com.lwl.gedan.model.entity.Music">
+        select * from music where isDelete = 0 order by music
+    </select>
+
+    <!--List<Music> getSearchMusicList(String searchText);-->
+    <select id="getSearchMusicList" resultType="com.lwl.gedan.model.entity.Music">
+        select * from music where isDelete = 0 and music like CONCAT('%', #{searchText}, '%') order by music
+    </select>
+</mapper>
